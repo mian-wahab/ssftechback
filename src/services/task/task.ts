@@ -32,37 +32,41 @@ export const getAllPaginatedTasks = async (user: JWTEncryptedData, page: number,
 }
 export const createNewTask = async (task: TaskInput): Promise<ITask> => {
     const checkUser = await findById(task?.createdBy);
-    if(!checkUser) {
+    if (!checkUser) {
         throw new IError('User not found', 404);
     }
     const newTask = new Task({ ...task });
     return await newTask.save();
 };
 
-export const updateTask = async (id: string, task: TaskInput, user:JWTEncryptedData): Promise<ITask | null> => {
+export const updateTask = async (id: string, task: TaskInput, user: JWTEncryptedData): Promise<ITask | null> => {
     const checkTask = await findTaskById(id);
     if (!checkTask) {
         throw new IError('Task not found', 404);
     }
     // make sure the user is authorized to update the task, or this task belongs to the user
-    if(user?.id?.toString() !== checkTask?.createdBy?.toString()) {
+    if (user?.id?.toString() !== checkTask?.createdBy?.toString()) {
         throw new IError('You are not authorized to perform this action', 403);
     }
-    
+
     const updatedTask = await Task.findByIdAndUpdate(id, { ...task }, { new: true });
     return updatedTask;
 };
 
-export const deleteTask = async (id: string): Promise<ITask | null> => {
+export const deleteTask = async (id: string, user: JWTEncryptedData): Promise<ITask | null> => {
     const checkTask = await findTaskById(id);
     if (!checkTask) {
         throw new IError('Task not found', 404);
+    }
+    // make sure the user is authorized to update the task, or this task belongs to the user
+    if (user?.id?.toString() !== checkTask?.createdBy?.toString()) {
+        throw new IError('You are not authorized to perform this action', 403);
     }
     await Task.findByIdAndDelete(id);
     return checkTask;
 }
 
-export const filterTasks = async (user: JWTEncryptedData, page: number, limit: number, filter: TaskFilter, ): Promise<ITask[]> => {
+export const filterTasks = async (user: JWTEncryptedData, page: number, limit: number, filter: TaskFilter,): Promise<ITask[]> => {
     const query = {} as FilterQueryInput;
     if (user?.role === UserRoles.USER) {
         query.createdBy = user?.id;
