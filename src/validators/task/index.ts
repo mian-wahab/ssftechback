@@ -15,10 +15,10 @@ export const TaskInput = {
 export const UpdateTaskValidation = {
     [Segments.BODY]: Joi.object().keys({
         title: Joi.string(),
-        description: Joi?.string().max(100),
+        description: Joi.string().max(100),
         status: Joi.string().valid(...taskStatusValues),
         dueDate: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/)
-    })
+    }).or('title', 'description', 'status', 'dueDate')
 }
 
 

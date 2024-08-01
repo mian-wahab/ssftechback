@@ -15,7 +15,7 @@ export const findById = async (id: string): Promise<IUser | null> => {
 };
 
 export const getAll = async (): Promise<IUser[]> => {
-    const users = await User.find().lean();
+    const users = await User.find().populate('tasks').lean();
     return users;
 }
 export const createUser = async (user: UserInput): Promise<IUser> => {

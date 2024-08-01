@@ -49,7 +49,7 @@ export const updateTask = async (id: string, task: TaskInput, user: JWTEncrypted
     if (user?.id?.toString() !== checkTask?.createdBy?.toString()) {
         throw new IError('You are not authorized to perform this action', 403);
     }
-
+    
     const updatedTask = await Task.findByIdAndUpdate(id, { ...task }, { new: true });
     return updatedTask;
 };
@@ -67,7 +67,7 @@ export const deleteTask = async (id: string, user: JWTEncryptedData): Promise<IT
     return checkTask;
 }
 
-export const filterTasks = async (user: JWTEncryptedData, page: number, limit: number, filter: TaskFilter,): Promise<ITask[]> => {
+export const filterTasks = async (user: JWTEncryptedData, page: number, limit: number, filter: TaskFilter,): Promise<GetAllPaginatedTasksResponse> => {
     const query = {} as FilterQueryInput;
     if (user?.role === UserRoles.USER) {
         query.createdBy = user?.id;
@@ -85,6 +85,7 @@ export const filterTasks = async (user: JWTEncryptedData, page: number, limit: n
         ];
     }
     const tasks = await Task.find(query).skip((page - 1) * limit).limit(limit).lean();
-    return tasks;
+    const total = await Task.countDocuments(query);
+    return { tasks, total, page, limit };
 }
 

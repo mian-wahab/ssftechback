@@ -12,7 +12,11 @@ const app = express();
 dotenv.config();
 
 const port = process.env.PORT;
+
+// Restrict the size of the request body to 50mb
 app.use(json({ limit: '50mb' }));
+
+
 app.use(express.json());
 
 app.use(cors({ origin: true, credentials: true }));
