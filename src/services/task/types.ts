@@ -6,7 +6,7 @@ export interface TaskInput {
     description: string;
     status: TaskStatus;
     dueDate?: string;
-    createdBy: string; 
+    createdBy: string;
 }
 
 export interface UpdateTaskInput {
@@ -31,6 +31,8 @@ export interface TaskFilter {
     status?: TaskStatus;
     dueDate?: string;
     keyword?: string;
+    isSortByStatus: boolean;
+    isSortByDueDate: boolean;
 }
 
 export interface FilterQueryInput {

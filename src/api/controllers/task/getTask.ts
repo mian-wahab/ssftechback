@@ -29,11 +29,13 @@ export const GetById = async (req: AuthenticatedRequest, res: Response) => {
 }
 
 export const GetFilteredTasks = async (req: AuthenticatedRequest, res: Response) => {
-    const { status, dueDate, keyword, page = 1, limit = 10 } = req?.query;
+    const { status, dueDate, keyword, page = 1, limit = 10, isSortByStatus = false, isSortByDueDate= false  } = req?.query;
     const filter = {
         status,
         dueDate,
-        keyword
+        keyword,
+        isSortByStatus,
+        isSortByDueDate
     } as TaskFilter;
     const fields = await filterTasks(req?.user as JWTEncryptedData, Number(page), Number(limit), filter);
     return ApiResponse(true, "Tasks Fetched Successfully", fields, 200, res);

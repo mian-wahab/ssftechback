@@ -30,7 +30,7 @@ export const getAllPaginatedTasks = async (user: JWTEncryptedData, page: number,
     const total = await Task.countDocuments(query);
     return { tasks, total, page, limit };
 }
-export const createNewTask = async (task: TaskInput, user:JWTEncryptedData): Promise<ITask> => {
+export const createNewTask = async (task: TaskInput, user: JWTEncryptedData): Promise<ITask> => {
     const checkUser = await findById(user?.id);
     if (!checkUser) {
         throw new IError('User not found', 404);
@@ -49,7 +49,7 @@ export const updateTask = async (id: string, task: TaskInput, user: JWTEncrypted
     if (user?.id?.toString() !== checkTask?.createdBy?.toString()) {
         throw new IError('You are not authorized to perform this action', 403);
     }
-    
+
     const updatedTask = await Task.findByIdAndUpdate(id, { ...task }, { new: true });
     return updatedTask;
 };
@@ -84,8 +84,16 @@ export const filterTasks = async (user: JWTEncryptedData, page: number, limit: n
             { description: { $regex: new RegExp(filter?.keyword as string, 'i') } }
         ];
     }
-    const tasks = await Task.find(query).skip((page - 1) * limit).limit(limit).lean();
+    let sortOptions = {};
+    if (filter?.isSortByStatus) {
+        sortOptions = { ...sortOptions, status: 1 };
+    }
+    if (filter?.isSortByDueDate) {
+        sortOptions = { ...sortOptions, dueDate: 1 };
+    }
+    const tasks = await Task.find(query).sort(sortOptions).skip((page - 1) * limit).limit(limit).lean();
     const total = await Task.countDocuments(query);
+
     return { tasks, total, page, limit };
 }
 
