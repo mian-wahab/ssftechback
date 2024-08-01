@@ -30,11 +30,12 @@ export const getAllPaginatedTasks = async (user: JWTEncryptedData, page: number,
     const total = await Task.countDocuments(query);
     return { tasks, total, page, limit };
 }
-export const createNewTask = async (task: TaskInput): Promise<ITask> => {
-    const checkUser = await findById(task?.createdBy);
+export const createNewTask = async (task: TaskInput, user:JWTEncryptedData): Promise<ITask> => {
+    const checkUser = await findById(user?.id);
     if (!checkUser) {
         throw new IError('User not found', 404);
     }
+    task.createdBy = user?.id;
     const newTask = new Task({ ...task });
     return await newTask.save();
 };
