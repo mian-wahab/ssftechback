@@ -1,5 +1,5 @@
 
-# Node.js TypeScript Application --> Danber Tech
+# Node.js TypeScript Application --> Vendor-Management
 
 ## Overview
 
