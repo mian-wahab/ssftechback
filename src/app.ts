@@ -26,7 +26,7 @@ app.use(helmet());
 // Connecting to db, --> we can use this after node server is up and running
 dbConnector();
 
-app.get('/', (req: Request, res: Response) => { res.send('Welcome to Danber Tech.') });
+app.get('/', (req: Request, res: Response) => { res.send('Welcome to Vendor-Management.') });
 
 app.use('/api/v1', routes);
 

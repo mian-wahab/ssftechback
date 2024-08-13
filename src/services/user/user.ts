@@ -14,13 +14,16 @@ export const findById = async (id: string): Promise<IUser | null> => {
     return user;
 };
 
-export const getAll = async (): Promise<IUser[]> => {
-    const users = await User.find().populate('tasks').lean();
+export const getAll = async (isVendorOnly: boolean = false): Promise<IUser[]> => {
+    const query = {
+        isVendorOnly
+    } as { isVendorOnly: boolean };
+    const users = await User.find(query).populate('tasks').lean();
     return users;
 }
 export const createUser = async (user: UserInput): Promise<IUser> => {
     const findUser = await User.findOne({ $or: [{ email: user?.email }, { username: user?.userName }] }).lean();
-    if(findUser) {
+    if (findUser) {
         throw new IError('User already exists', 409);
     }
     const password = await bcrypt?.hash(user.password, 10);
@@ -30,17 +33,17 @@ export const createUser = async (user: UserInput): Promise<IUser> => {
 
 export const updateUser = async (id: string, user: UserInput): Promise<IUser | null> => {
     const checkUser = await findById(id);
-    if(!checkUser) {
+    if (!checkUser) {
         throw new Error('User not found');
     }
     const newPassword = await bcrypt?.hash(user.password, 10);
-    const updatedUser = await User.findByIdAndUpdate(id, { ...user, password: newPassword }, { new: true });    
+    const updatedUser = await User.findByIdAndUpdate(id, { ...user, password: newPassword }, { new: true });
     return updatedUser;
 }
 
 export const deleteUser = async (id: string): Promise<IUser | null> => {
     const checkUser = await findById(id);
-    if(!checkUser) {
+    if (!checkUser) {
         throw new Error('User not found');
     }
     await User.findByIdAndDelete(id);
@@ -48,12 +51,12 @@ export const deleteUser = async (id: string): Promise<IUser | null> => {
 }
 
 export const loginWithEmail = async (user: string, password: string) => {
-    const findUser = await User.findOne({$or: [{ email: user }, { username: user }]}).lean();
-    if(!findUser) {
+    const findUser = await User.findOne({ $or: [{ email: user }, { username: user }] }).lean();
+    if (!findUser) {
         throw new IError('Invalid Credentials', 401);
     }
     const isMatch = await bcrypt.compare(password, findUser?.password);
-    if(!isMatch) {
+    if (!isMatch) {
         throw new IError('Invalid Credentials', 401);
     }
     return findUser;

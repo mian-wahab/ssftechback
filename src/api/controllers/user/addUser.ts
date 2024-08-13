@@ -1,6 +1,5 @@
 import { ApiResponse } from "@/shared";
 import { Request, Response } from "express";
-import bcrypt from 'bcryptjs';
 import _ from "lodash";
 import { createUser } from "@/services/user/user";
 import { UserInput } from "@/services/user/types";

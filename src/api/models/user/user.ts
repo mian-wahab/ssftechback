@@ -29,7 +29,7 @@ const userSchema = new Schema<IUser>({
   role: {
     type: String,
     required: true,
-    default: UserRoles.USER,
+    default: UserRoles.VENDOR,
     enum: UserRoles
   }
 }, {
