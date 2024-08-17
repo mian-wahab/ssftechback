@@ -3,4 +3,6 @@ export interface FtpInput {
     ftpUser: string;
     password: string;
     isSecure: boolean;
+    user: string;
+    createdBy: string;
 }

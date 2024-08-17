@@ -2,7 +2,7 @@ import { UserRoles } from "@/api/models/user/enum";
 
 
 export interface Login {
-    user: string;
+    email: string;
     password: string;
 }
 

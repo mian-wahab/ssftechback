@@ -13,7 +13,7 @@ export const getAll = async (): Promise<IFtp[]> => {
     return users;
 }
 
-export const createFtpInBulk = async (ftp: FtpInput[]): Promise<IFtp[]> => {
+export const createFtpInBulk = async (ftp: FtpInput[]) => {
     const newFtp = await Ftp.insertMany(ftp);
     return newFtp;
 }
