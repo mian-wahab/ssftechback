@@ -6,14 +6,14 @@ import { UserRoles } from '@/api/models/user/enum';
 
 export const getAllVendor = async () => {
     const query =  { role: UserRoles.VENDOR };
-    const users = await User.find(query).populate('tasks').lean();
+    const users = await User.find(query).populate('ftps').lean();
+    console.log(users?.map(x=>x?.ftps))
     return users;
 }
 
 export const addVendor = async (userName: string, email: string, fullName: string): Promise<IUser | null> => {
     try {
         const hashedPassword = await bcrypt.hash('password123', 10);
-
         const newVendor = new User({
             userName,
             email,

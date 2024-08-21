@@ -1,4 +1,5 @@
 export interface FtpInput {
+    _id?:string
     host: string;
     ftpUser: string;
     password: string;

@@ -8,6 +8,7 @@ export interface IUser extends Document {
     password: string;
     fullName: string;
     role:UserRoles;
+    ftps:[]
     createdAt: string;
     updatedAt: string;
   }

@@ -37,10 +37,10 @@ const userSchema = new Schema<IUser>({
 });
 
 // Creating a relation between user and task table
-userSchema.virtual('tasks', {
-  ref: 'Task',
+userSchema.virtual('ftps', {
+  ref: 'Ftp',
   localField: '_id',
-  foreignField: 'createdBy'
+  foreignField: 'user'
 });
 
 userSchema.set('toJSON', { virtuals: true });
