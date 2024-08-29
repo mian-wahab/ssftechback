@@ -6,7 +6,8 @@ export const AsyncWrapper = (fn: any) => async (req: Request, res: Response, nex
         const result = await fn(req, res);
         return result; 
     } catch (error) {
+        console.log(error)
         const { message, statusCode } = error;
-        return ApiResponse(false, message, error, statusCode, res);
+        return ApiResponse(false, message, error, 500, res);
     }
 }

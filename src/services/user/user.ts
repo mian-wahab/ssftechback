@@ -24,7 +24,7 @@ export const getAll = async (isVendorOnly: boolean = false): Promise<IUser[]> =>
 export const createUser = async (user: UserInput): Promise<IUser> => {
     const findUser = await User.findOne({ $or: [{ email: user?.email }, { username: user?.userName }] }).lean();
     if (findUser) {
-        throw new IError('User already exists', 409);
+        throw new IError('Vendor already exists', 409);
     }
     const password = await bcrypt?.hash(user.password, 10);
     const newUser = new User({ ...user, password });

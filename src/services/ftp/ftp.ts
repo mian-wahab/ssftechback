@@ -13,17 +13,16 @@ export const getAll = async (): Promise<IFtp[]> => {
     return users;
 }
 
-export const createFtpInBulk = async (ftp: FtpInput[]): Promise<IFtp[]> => {
+export const createFtpInBulk = async (ftp: FtpInput[]) => {
     const newFtp = await Ftp.insertMany(ftp);
     return newFtp;
 }
 export const createFtp = async (ftp: FtpInput): Promise<IFtp> => {
-    const findFtp = await Ftp.findOne({ $or: [{ host: ftp?.host, user: ftp?.ftpUser }] }).lean();
+    const findFtp = await Ftp.findOne({ $or: [{ host: ftp?.host, ftpUser: ftp?.ftpUser }] }).lean();
     if (findFtp) {
         throw new IError('Ftp already exists', 409);
     }
-    const newFtp = new Ftp(ftp);
-    return await newFtp.save();
+   return await Ftp.create(ftp);
 };
 
 export const updateFtp = async (id: string, user: FtpInput): Promise<IFtp | null> => {
@@ -33,6 +32,17 @@ export const updateFtp = async (id: string, user: FtpInput): Promise<IFtp | null
     }
     const updatedUser = await Ftp.findByIdAndUpdate(id, user, { new: true });
     return updatedUser;
+}
+
+export const bulkUpdate = async (ftp:FtpInput[], userId:string, currentUser:string) => {
+    await Ftp.deleteMany({user: userId});
+    const FtpsToAdd = [...ftp]
+    FtpsToAdd?.forEach(x => {
+        x.createdBy = currentUser;
+        x.user = userId
+    });
+    const newFtps = await Ftp.insertMany(FtpsToAdd);
+    return newFtps
 }
 
 export const deleteFtp = async (id: string): Promise<IFtp | null> => {

@@ -1,15 +1,9 @@
 import { UserRoles } from "@/api/models/user/enum";
 
-
-export interface Login {
-    email: string;
-    password: string;
-}
-
-export interface JWTEncryptedData {
-    id: string;
+export interface UserInput {
     userName: string;
     email: string;
     fullName: string;
+    password: string;
     role:UserRoles;
 }
