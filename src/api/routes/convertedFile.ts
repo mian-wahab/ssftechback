@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { celebrate } from 'celebrate';
 import { AsyncWrapper } from '@/utils';
-import {transferExcelData} from '../controllers/convertedfile/convertFile';
-const router = Router();
+import {uploadAndConvertFile} from '../controllers/convertedfile/convertFile';
+import multer from 'multer';
 
-router.post('/add', AsyncWrapper(transferExcelData))
+const router = Router();
+const upload = multer({ dest: 'uploads/' });
+router.post('/uploadAndConvertFile', upload.single('file'),AsyncWrapper(uploadAndConvertFile))
 
 export default router

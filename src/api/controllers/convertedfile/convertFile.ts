@@ -1,11 +1,8 @@
 import { Request, Response } from 'express';
 import * as XLSX from 'xlsx';
-import path from 'path';
 import fs from 'fs';
 import { InputData } from './types';
-import { ApiResponse } from '@/shared';
-const sourceFilePath = path.join(__dirname, '../../../uploads/products_export_1.csv');
-const outputXlsxPath = path.join(__dirname, '../../../uploads/output.csv');
+
 
 const headers: (keyof InputData)[] = [
   "Handle", "Command", "Title", "Supplier Name", "Supplier Code", "Topline Code", "Barcode",
@@ -17,8 +14,16 @@ const headers: (keyof InputData)[] = [
   "Image Src"
 ];
 
-export const transferExcelData = (req: Request, res: Response) => {
-    const sourceWorkbook = XLSX.readFile(sourceFilePath, { type: 'file', raw: true });
+export const uploadAndConvertFile = (req: Request, res: Response) => {
+  console.log('Uploading file...',req);
+    const file = req.file;
+    console.log('File:', file);
+ 
+    if (!file) {
+        return res.status(400).send('No file uploaded');
+    }
+
+    const sourceWorkbook = XLSX.readFile(file.path, { type: 'file', raw: true });
     const sourceWorksheet = sourceWorkbook.Sheets[sourceWorkbook.SheetNames[0]];
     const sourceData: any[] = XLSX.utils.sheet_to_json(sourceWorksheet);
 
@@ -33,13 +38,16 @@ export const transferExcelData = (req: Request, res: Response) => {
     });
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData, { header: headers as string[] });
-
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-    // Write the workbook to a file
-    XLSX.writeFile(workbook, outputXlsxPath);
+    const outputBuffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
 
-    return ApiResponse(true, "File created successfully", outputXlsxPath , 201, res);
+    fs.unlinkSync(file.path);
 
+    res.setHeader('Content-Disposition', 'attachment; filename=converted_file.xlsx');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(outputBuffer);
+
+    return;
 };
