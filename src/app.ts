@@ -9,7 +9,7 @@ import errorHandler from './middlewares/validation/errorHandler';
 import dbConnector from './config/database';
 
 const app = express();
-dotenv.config();
+require("dotenv").config();
 
 const port = process.env.PORT;
 
@@ -23,14 +23,13 @@ app.use(cors({ origin: true, credentials: true }));
 
 app.use(helmet());
 
-// Connecting to db, --> we can use this after node server is up and running
+
 dbConnector();
 
 app.get('/', (req: Request, res: Response) => { res.send('Welcome to Vendor-Management.') });
 
 app.use('/api/v1', routes);
 
-// We are using this middleware to handle any kind of validation error of in-coming request
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
     if (isCelebrateError(err)) {
         return errorHandler(err, req, res, next);
