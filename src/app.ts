@@ -9,7 +9,7 @@ import errorHandler from './middlewares/validation/errorHandler';
 import dbConnector from './config/database';
 
 const app = express();
-require("dotenv").config();
+dotenv.config();
 
 const port = process.env.PORT;
 
