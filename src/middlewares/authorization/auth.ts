@@ -21,6 +21,9 @@ export const Authorization = (permission: string[]) => {
       if ((permission?.some((p) => p === role))) {
         return next();
       }
+      if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
+  return res.status(401).end('Unauthorized');
+}
       // return next();
       return ApiResponse(false, "Un-Authorize, You are not allowed to access this resource", null, 401, res);
     } catch (error) {
