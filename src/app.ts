@@ -26,7 +26,7 @@ app.use(helmet());
 
 dbConnector();
 
-app.get('/', (req: Request, res: Response) => { res.send('Welcome to Vendor-Management.') });
+// app.get('/', (req: Request, res: Response) => { res.send('Welcome to Vendor-Management.') });
 
 app.use('/api/v1', routes);
 
